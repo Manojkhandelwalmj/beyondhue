@@ -16,21 +16,23 @@ class ColourAnalyserScreen extends StatefulWidget {
 class _ColourAnalyserScreenState extends State<ColourAnalyserScreen> {
   File? image;
 
-  Future pickImage() async {
-    final picker = ImagePicker();
+  Future pickImage(ImageSource source) async {
 
-    final picked = await picker.pickImage(
-      source: ImageSource.gallery,
-    );
+  final picker = ImagePicker();
 
-    if (picked == null) return;
+  final picked = await picker.pickImage(
+    source: source,
+  );
 
-    setState(() {
-      image = File(picked.path);
-    });
+  if (picked == null) return;
 
-    await context.read<AnalyserProvider>().analyseImage(picked.path);
-  }
+  setState(() {
+    image = File(picked.path);
+  });
+
+  await context.read<AnalyserProvider>().analyseImage(picked.path);
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -44,10 +46,26 @@ class _ColourAnalyserScreenState extends State<ColourAnalyserScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            ElevatedButton(
-              onPressed: pickImage,
-              child: const Text("Select Clothing Image"),
-            ),
+            Row(
+  mainAxisAlignment: MainAxisAlignment.center,
+  children: [
+
+    ElevatedButton.icon(
+      onPressed: () => pickImage(ImageSource.camera),
+      icon: const Icon(Icons.camera_alt),
+      label: const Text("Camera"),
+    ),
+
+    const SizedBox(width: 20),
+
+    ElevatedButton.icon(
+      onPressed: () => pickImage(ImageSource.gallery),
+      icon: const Icon(Icons.photo),
+      label: const Text("Gallery"),
+    ),
+
+  ],
+),
             const SizedBox(height: 20),
             if (image != null)
               Image.file(

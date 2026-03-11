@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'colour_analyser/colour_analyser_screen.dart';
+import 'wardrobe/wardrobe_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -79,7 +80,14 @@ class HomeScreen extends StatelessWidget {
               context,
               "Wardrobe",
               Icons.checkroom,
-              () {},
+              () {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => const WardrobeScreen(),
+    ),
+  );
+},
             ),
 
             buildCard(
