@@ -16,13 +16,11 @@ class AddClothingScreen extends StatefulWidget {
 }
 
 class _AddClothingScreenState extends State<AddClothingScreen> {
-
   final clothingController = TextEditingController();
   final occasionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-
     final analyser = context.watch<AnalyserProvider>();
 
     final colour = analyser.detectedColour;
@@ -30,47 +28,36 @@ class _AddClothingScreenState extends State<AddClothingScreen> {
     final imagePath = analyser.lastImagePath;
 
     return Scaffold(
-
       appBar: AppBar(
         title: const Text("Add Clothing"),
       ),
-
       body: colour == null || imagePath == null
           ? const Center(child: Text("Analyse clothing first"))
           : Padding(
               padding: const EdgeInsets.all(16),
-
               child: Column(
                 children: [
-
                   Image.file(
                     File(imagePath),
                     height: 200,
                   ),
-
                   const SizedBox(height: 20),
-
                   TextField(
                     controller: clothingController,
                     decoration: const InputDecoration(
                       labelText: "Clothing Type (shirt, pant, etc)",
                     ),
                   ),
-
                   const SizedBox(height: 16),
-
                   TextField(
                     controller: occasionController,
                     decoration: const InputDecoration(
                       labelText: "Occasion (casual, formal, party)",
                     ),
                   ),
-
                   const SizedBox(height: 30),
-
                   ElevatedButton(
                     onPressed: () {
-
                       final item = ClothingItem(
                         id: const Uuid().v4(),
                         imagePath: imagePath,
@@ -81,6 +68,8 @@ class _AddClothingScreenState extends State<AddClothingScreen> {
                         hue: colour.hue,
                         saturation: colour.saturation,
                         brightness: colour.brightness,
+                        temperature: colour.temperature,
+                        tone: colour.tone,
                       );
 
                       context.read<WardrobeProvider>().addItem(item);
@@ -89,7 +78,6 @@ class _AddClothingScreenState extends State<AddClothingScreen> {
                     },
                     child: const Text("Save Clothing"),
                   )
-
                 ],
               ),
             ),

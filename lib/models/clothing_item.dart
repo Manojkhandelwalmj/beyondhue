@@ -4,6 +4,7 @@ part 'clothing_item.g.dart';
 
 @HiveType(typeId: 0)
 class ClothingItem extends HiveObject {
+
   @HiveField(0)
   String id;
 
@@ -31,6 +32,12 @@ class ClothingItem extends HiveObject {
   @HiveField(8)
   double brightness;
 
+  @HiveField(9)
+  String temperature; // warm / cool / neutral
+
+  @HiveField(10)
+  String tone; // light / medium / dark
+
   ClothingItem({
     required this.id,
     required this.imagePath,
@@ -41,5 +48,7 @@ class ClothingItem extends HiveObject {
     required this.hue,
     required this.saturation,
     required this.brightness,
+    required this.temperature,
+    required this.tone,
   });
 }

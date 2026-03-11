@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:beyondhue/screens/outfit/outfit_suggestion_screen.dart';
 import 'package:flutter/material.dart';
 import '../../models/clothing_item.dart';
 
@@ -92,6 +93,24 @@ class WardrobeItemDetailScreen extends StatelessWidget {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             Text(item.brightness.toStringAsFixed(2)),
+
+            const SizedBox(height: 30),
+
+Center(
+  child: ElevatedButton(
+    onPressed: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => OutfitSuggestionScreen(
+            baseItem: item,
+          ),
+        ),
+      );
+    },
+    child: const Text("Find Matching Outfit"),
+  ),
+),
           ],
         ),
       ),
