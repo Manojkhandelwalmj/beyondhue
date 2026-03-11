@@ -4,18 +4,19 @@ import '../models/colour_data.dart';
 import '../services/colour_detection_service.dart';
 
 class AnalyserProvider extends ChangeNotifier {
-
   ColourData? detectedColour;
 
   bool isLoading = false;
 
-  Future<void> analyseImage(String imagePath) async {
+  String? lastImagePath;
 
+  Future<void> analyseImage(String imagePath) async {
     isLoading = true;
     notifyListeners();
 
-    detectedColour =
-        await ColourDetectionService.analyseImage(imagePath);
+    lastImagePath = imagePath;
+
+    detectedColour = await ColourDetectionService.analyseImage(imagePath);
 
     isLoading = false;
     notifyListeners();

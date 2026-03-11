@@ -9,6 +9,10 @@ class WardrobeProvider extends ChangeNotifier {
 
   List<ClothingItem> items = [];
 
+  WardrobeProvider() {
+    init();
+  }
+
   Future<void> init() async {
 
     wardrobeBox = await Hive.openBox<ClothingItem>('wardrobe');
