@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:beyondhue/screens/wardrobe/wardrobe_item_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -33,29 +34,40 @@ class WardrobeScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 final item = items[index];
 
-                return Card(
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: Image.file(
-                          File(item.imagePath),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(item.clothingType),
-                      Text(
-                        item.occasion,
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                      Text(
-                        "${item.colourName} (${item.hexCode})",
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                      const SizedBox(height: 8),
-                    ],
-                  ),
-                );
+                return InkWell(
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => WardrobeItemDetailScreen(item: item),
+      ),
+    );
+  },
+
+  child: Card(
+    child: Column(
+      children: [
+        Expanded(
+          child: Image.file(
+            File(item.imagePath),
+            fit: BoxFit.cover,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(item.clothingType),
+        Text(
+          item.occasion,
+          style: const TextStyle(fontSize: 12),
+        ),
+        Text(
+          "${item.colourName} (${item.hexCode})",
+          style: const TextStyle(fontSize: 12),
+        ),
+        const SizedBox(height: 8),
+      ],
+    ),
+  ),
+);
               },
             ),
     );
