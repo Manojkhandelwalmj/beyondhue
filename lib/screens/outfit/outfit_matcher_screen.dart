@@ -5,7 +5,6 @@ import 'package:beyondhue/services/colour_detection_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-
 class OutfitMatcherScreen extends StatefulWidget {
   const OutfitMatcherScreen({super.key});
 
@@ -29,19 +28,20 @@ class _OutfitMatcherScreenState extends State<OutfitMatcherScreen> {
   final picker = ImagePicker();
 
   Future pickImage(bool isTop) async {
-
-    final source = await showDialog<ImageSource>(
+    final source = await showModalBottomSheet<ImageSource>(
       context: context,
-      builder: (_) => AlertDialog(
-        title: const Text("Select Source"),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, ImageSource.camera),
-            child: const Text("Camera"),
+      builder: (_) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            leading: const Icon(Icons.camera_alt),
+            title: const Text("Camera"),
+            onTap: () => Navigator.pop(context, ImageSource.camera),
           ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, ImageSource.gallery),
-            child: const Text("Gallery"),
+          ListTile(
+            leading: const Icon(Icons.photo),
+            title: const Text("Gallery"),
+            onTap: () => Navigator.pop(context, ImageSource.gallery),
           ),
         ],
       ),
@@ -67,7 +67,6 @@ class _OutfitMatcherScreenState extends State<OutfitMatcherScreen> {
   }
 
   void analyseOutfit() {
-
     if (topColour == null || bottomColour == null) return;
 
     final result = OutfitMatcherRules.analyse(
@@ -82,90 +81,168 @@ class _OutfitMatcherScreenState extends State<OutfitMatcherScreen> {
     });
   }
 
+  Widget buildUploadCard({
+    required String title,
+    required File? image,
+    required ColourData? colour,
+    required VoidCallback onTap,
+  }) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          height: 180,
+          margin: const EdgeInsets.symmetric(horizontal: 8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                blurRadius: 10,
+                color: Colors.black.withOpacity(0.1),
+              )
+            ],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (image != null)
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.file(image, height: 90),
+                )
+              else
+                const Icon(Icons.add_a_photo, size: 40),
+
+              const SizedBox(height: 10),
+
+              Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+
+              if (colour != null)
+                Text(
+                  colour.name,
+                  style: const TextStyle(color: Colors.grey),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildOccasionSelector() {
+    final options = ["formal", "casual", "traditional", "activewear"];
+
+    return Wrap(
+      spacing: 10,
+      children: options.map((e) {
+        final isSelected = selectedOccasion == e;
+
+        return ChoiceChip(
+          label: Text(e.toUpperCase()),
+          selected: isSelected,
+          onSelected: (_) {
+            setState(() {
+              selectedOccasion = e;
+            });
+          },
+        );
+      }).toList(),
+    );
+  }
+
+  Widget buildResultCard() {
+    if (score == null) return const SizedBox();
+
+    return Container(
+      margin: const EdgeInsets.only(top: 20),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: isSafe! ? Colors.green.shade50 : Colors.red.shade50,
+      ),
+      child: Column(
+        children: [
+          Text(
+            isSafe! ? "SAFE TO WEAR ✅" : "UNSAFE ❌",
+            style: TextStyle(
+              fontSize: 18,
+              color: isSafe! ? Colors.green : Colors.red,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Outfit Matcher")),
+      appBar: AppBar(
+        title: const Text("Outfit Matcher"),
+        elevation: 0,
+      ),
 
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFFF5F7FA), Color(0xFFE4E7EB)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
 
-            DropdownButton<String>(
-              value: selectedOccasion,
-              items: const [
-                DropdownMenuItem(value: "formal", child: Text("Formal")),
-                DropdownMenuItem(value: "casual", child: Text("Casual")),
-                DropdownMenuItem(value: "traditional", child: Text("Traditional")),
-                DropdownMenuItem(value: "activewear", child: Text("Activewear")),
-              ],
-              onChanged: (value) {
-                setState(() {
-                  selectedOccasion = value!;
-                });
-              },
-            ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
 
-            const SizedBox(height: 20),
+              buildOccasionSelector(),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
+              const SizedBox(height: 20),
 
-                Column(
-                  children: [
-                    ElevatedButton(
-                      onPressed: () => pickImage(true),
-                      child: const Text("Upload Top"),
-                    ),
-                    if (topImage != null)
-                      Image.file(topImage!, height: 100),
-                    if (topColour != null)
-                      Text(topColour!.name),
-                  ],
-                ),
-
-                Column(
-                  children: [
-                    ElevatedButton(
-                      onPressed: () => pickImage(false),
-                      child: const Text("Upload Bottom"),
-                    ),
-                    if (bottomImage != null)
-                      Image.file(bottomImage!, height: 100),
-                    if (bottomColour != null)
-                      Text(bottomColour!.name),
-                  ],
-                ),
-
-              ],
-            ),
-
-            const SizedBox(height: 30),
-
-            ElevatedButton(
-              onPressed: analyseOutfit,
-              child: const Text("Analyse Outfit"),
-            ),
-
-            const SizedBox(height: 20),
-
-            if (score != null)
-              Column(
+              Row(
                 children: [
-                  Text("Score: $score%"),
-                  Text(
-                    isSafe! ? "SAFE TO WEAR ✅" : "UNSAFE ❌",
-                    style: TextStyle(
-                      color: isSafe! ? Colors.green : Colors.red,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )
+                  buildUploadCard(
+                    title: "Top",
+                    image: topImage,
+                    colour: topColour,
+                    onTap: () => pickImage(true),
+                  ),
+                  buildUploadCard(
+                    title: "Bottom",
+                    image: bottomImage,
+                    colour: bottomColour,
+                    onTap: () => pickImage(false),
+                  ),
                 ],
-              )
-          ],
+              ),
+
+              const SizedBox(height: 30),
+
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: analyseOutfit,
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                  child: const Text(
+                    "Analyse Outfit",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+              ),
+
+              buildResultCard(),
+
+            ],
+          ),
         ),
       ),
     );
