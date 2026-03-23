@@ -90,15 +90,15 @@ class _ColourAnalyserScreenState extends State<ColourAnalyserScreen> {
                       const SizedBox(height: 10),
                       Text("HEX: ${analyser.detectedColour!.hex}"),
                       const SizedBox(height: 8),
-                      Text(
-                          "Hue: ${analyser.detectedColour!.hue.toStringAsFixed(2)}"),
-                      const SizedBox(height: 8),
-                      Text(
-                          "Saturation: ${analyser.detectedColour!.saturation.toStringAsFixed(2)}"),
-                      const SizedBox(height: 8),
-                      Text(
-                          "Brightness: ${analyser.detectedColour!.brightness.toStringAsFixed(2)}"),
-                      const SizedBox(height: 8),
+                      // Text(
+                      //     "Hue: ${analyser.detectedColour!.hue.toStringAsFixed(2)}"),
+                      // const SizedBox(height: 8),
+                      // Text(
+                      //     "Saturation: ${analyser.detectedColour!.saturation.toStringAsFixed(2)}"),
+                      // const SizedBox(height: 8),
+                      // Text(
+                      //     "Brightness: ${analyser.detectedColour!.brightness.toStringAsFixed(2)}"),
+                      // const SizedBox(height: 8),
                       Text(
                           "Temperature: ${analyser.detectedColour!.temperature}"),
                       const SizedBox(height: 8),

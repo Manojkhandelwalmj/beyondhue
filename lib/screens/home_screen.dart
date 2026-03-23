@@ -1,3 +1,4 @@
+import 'package:beyondhue/screens/outfit/outfit_matcher_screen.dart';
 import 'package:flutter/material.dart';
 import 'colour_analyser/colour_analyser_screen.dart';
 import 'wardrobe/wardrobe_screen.dart';
@@ -82,7 +83,14 @@ class HomeScreen extends StatelessWidget {
               context,
               "Outfit Matcher",
               Icons.style,
-              () {},
+              () {
+                 Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const OutfitMatcherScreen(),
+                  ),
+                );
+              },
             ),
             buildCard(
               context,
