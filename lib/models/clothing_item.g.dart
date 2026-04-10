@@ -28,13 +28,14 @@ class ClothingItemAdapter extends TypeAdapter<ClothingItem> {
       brightness: fields[8] as double,
       temperature: fields[9] as String,
       tone: fields[10] as String,
+      category: fields[11] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, ClothingItem obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -56,7 +57,9 @@ class ClothingItemAdapter extends TypeAdapter<ClothingItem> {
       ..writeByte(9)
       ..write(obj.temperature)
       ..writeByte(10)
-      ..write(obj.tone);
+      ..write(obj.tone)
+      ..writeByte(11)
+      ..write(obj.category);
   }
 
   @override

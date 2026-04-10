@@ -38,6 +38,10 @@ class ClothingItem extends HiveObject {
   @HiveField(10)
   String tone; // light / medium / dark
 
+  /// ✅ NEW FIELD (DO NOT CHANGE INDEX)
+  @HiveField(11)
+  String category; // Top / Bottom
+
   ClothingItem({
     required this.id,
     required this.imagePath,
@@ -50,5 +54,6 @@ class ClothingItem extends HiveObject {
     required this.brightness,
     required this.temperature,
     required this.tone,
+    required this.category, // ✅ NEW
   });
 }

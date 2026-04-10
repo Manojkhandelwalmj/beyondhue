@@ -25,17 +25,20 @@ class OutfitSuggestionScreen extends StatelessWidget {
 
     for (var item in items) {
 
-      if (item.id == baseItem.id) continue;
+  if (item.id == baseItem.id) continue;
 
-      final result = OutfitEngine.evaluatePair(baseItem, item);
+  // ✅ STRICT TOP-BOTTOM MATCHING
+  if (item.category == baseItem.category) continue;
 
-      if (result != "Not Recommended") {
-        matches.add({
-          "item": item,
-          "score": result,
-        });
-      }
-    }
+  final result = OutfitEngine.evaluatePair(baseItem, item);
+
+  if (result != "Not Recommended") {
+    matches.add({
+      "item": item,
+      "score": result,
+    });
+  }
+}
 
     return Scaffold(
       appBar: AppBar(

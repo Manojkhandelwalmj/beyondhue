@@ -1,11 +1,16 @@
-import 'package:beyondhue/screens/outfit/outfit_matcher_screen.dart';
 import 'package:flutter/material.dart';
 import 'colour_analyser/colour_analyser_screen.dart';
 import 'wardrobe/wardrobe_screen.dart';
 import 'wardrobe/add_clothing_screen.dart';
+import 'package:beyondhue/screens/outfit/outfit_matcher_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
+
+  // 🔷 DESIGN SYSTEM (same as AddClothingScreen)
+  static const Color primaryColor = Color(0xFF1E3A8A);
+  static const Color accentColor = Color(0xFFF59E0B);
+  static const Color bgColor = Color(0xFFF8FAFC);
 
   Widget buildCard(
     BuildContext context,
@@ -13,24 +18,52 @@ class HomeScreen extends StatelessWidget {
     IconData icon,
     VoidCallback onTap,
   ) {
-    return GestureDetector(
+    return InkWell(
+      borderRadius: BorderRadius.circular(20),
       onTap: onTap,
-      child: Card(
-        child: Center(
+      child: Ink(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.grey.shade200),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 10,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 22),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                icon,
-                size: 40,
-                color: Theme.of(context).colorScheme.primary,
+              
+              /// ICON CONTAINER (better visual anchor)
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: primaryColor.withOpacity(0.08),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  icon,
+                  size: 30,
+                  color: primaryColor,
+                ),
               ),
-              const SizedBox(height: 12),
+
+              const SizedBox(height: 14),
+
+              /// TITLE
               Text(
                 title,
+                textAlign: TextAlign.center,
                 style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF111827),
                 ),
               ),
             ],
@@ -43,9 +76,16 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bgColor,
+
       appBar: AppBar(
         title: const Text("BeyondHue"),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: bgColor,
+        foregroundColor: const Color(0xFF111827),
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: GridView.count(
@@ -53,9 +93,10 @@ class HomeScreen extends StatelessWidget {
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
           children: [
+
             buildCard(
               context,
-              "Colour Analyser",
+              "Colour\nAnalyser",
               Icons.color_lens,
               () {
                 Navigator.push(
@@ -66,6 +107,7 @@ class HomeScreen extends StatelessWidget {
                 );
               },
             ),
+
             buildCard(
               context,
               "Wardrobe",
@@ -79,12 +121,13 @@ class HomeScreen extends StatelessWidget {
                 );
               },
             ),
+
             buildCard(
               context,
-              "Outfit Matcher",
+              "Outfit\nMatcher",
               Icons.style,
               () {
-                 Navigator.push(
+                Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (_) => const OutfitMatcherScreen(),
@@ -92,9 +135,10 @@ class HomeScreen extends StatelessWidget {
                 );
               },
             ),
+
             buildCard(
               context,
-              "Add Clothing",
+              "Add\nClothing",
               Icons.add_circle,
               () {
                 Navigator.push(

@@ -14,6 +14,11 @@ class OutfitMatcherScreen extends StatefulWidget {
 
 class _OutfitMatcherScreenState extends State<OutfitMatcherScreen> {
 
+  // 🔷 DESIGN SYSTEM
+  static const Color primaryColor = Color(0xFF1E3A8A);
+  static const Color accentColor = Color(0xFFF59E0B);
+  static const Color bgColor = Color(0xFFF8FAFC);
+
   File? topImage;
   File? bottomImage;
 
@@ -88,35 +93,52 @@ class _OutfitMatcherScreenState extends State<OutfitMatcherScreen> {
     required VoidCallback onTap,
   }) {
     return Expanded(
-      child: GestureDetector(
+      child: InkWell(
+        borderRadius: BorderRadius.circular(20),
         onTap: onTap,
-        child: Container(
+        child: Ink(
           height: 180,
-          margin: const EdgeInsets.symmetric(horizontal: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 6),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
             color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.grey.shade200),
             boxShadow: [
               BoxShadow(
+                color: Colors.black.withOpacity(0.04),
                 blurRadius: 10,
-                color: Colors.black.withOpacity(0.1),
+                offset: const Offset(0, 6),
               )
             ],
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+
               if (image != null)
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Image.file(image, height: 90),
                 )
               else
-                const Icon(Icons.add_a_photo, size: 40),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: primaryColor.withOpacity(0.08),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.add_a_photo, color: primaryColor),
+                ),
 
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
 
-              Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF111827),
+                ),
+              ),
 
               if (colour != null)
                 Text(
@@ -135,6 +157,7 @@ class _OutfitMatcherScreenState extends State<OutfitMatcherScreen> {
 
     return Wrap(
       spacing: 10,
+      runSpacing: 10,
       children: options.map((e) {
         final isSelected = selectedOccasion == e;
 
@@ -146,6 +169,14 @@ class _OutfitMatcherScreenState extends State<OutfitMatcherScreen> {
               selectedOccasion = e;
             });
           },
+          selectedColor: primaryColor,
+          backgroundColor: Colors.white,
+          labelStyle: TextStyle(
+            color: isSelected ? Colors.white : Colors.black,
+          ),
+          side: BorderSide(
+            color: isSelected ? primaryColor : Colors.grey.shade300,
+          ),
         );
       }).toList(),
     );
@@ -154,23 +185,34 @@ class _OutfitMatcherScreenState extends State<OutfitMatcherScreen> {
   Widget buildResultCard() {
     if (score == null) return const SizedBox();
 
+    final bg = isSafe!
+        ? primaryColor.withOpacity(0.08)
+        : Colors.red.withOpacity(0.08);
+
+    final textColor = isSafe! ? primaryColor : Colors.red;
+
     return Container(
       margin: const EdgeInsets.only(top: 20),
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: isSafe! ? Colors.green.shade50 : Colors.red.shade50,
+        borderRadius: BorderRadius.circular(18),
+        color: bg,
       ),
       child: Column(
         children: [
           Text(
-            isSafe! ? "SAFE TO WEAR ✅" : "UNSAFE ❌",
+            isSafe! ? "SAFE TO WEAR" : "UNSAFE",
             style: TextStyle(
-              fontSize: 18,
-              color: isSafe! ? Colors.green : Colors.red,
-              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: textColor,
+              fontWeight: FontWeight.w700,
             ),
           ),
+          const SizedBox(height: 6),
+          Text(
+            "Score: $score",
+            style: const TextStyle(color: Colors.black54),
+          )
         ],
       ),
     );
@@ -178,71 +220,66 @@ class _OutfitMatcherScreenState extends State<OutfitMatcherScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
+      backgroundColor: bgColor,
+
       appBar: AppBar(
         title: const Text("Outfit Matcher"),
+        centerTitle: true,
         elevation: 0,
+        backgroundColor: bgColor,
+        foregroundColor: const Color(0xFF111827),
       ),
 
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFFF5F7FA), Color(0xFFE4E7EB)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
+        child: Column(
+          children: [
 
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
+            buildOccasionSelector(),
 
-              buildOccasionSelector(),
+            const SizedBox(height: 20),
 
-              const SizedBox(height: 20),
+            Row(
+              children: [
+                buildUploadCard(
+                  title: "Top",
+                  image: topImage,
+                  colour: topColour,
+                  onTap: () => pickImage(true),
+                ),
+                buildUploadCard(
+                  title: "Bottom",
+                  image: bottomImage,
+                  colour: bottomColour,
+                  onTap: () => pickImage(false),
+                ),
+              ],
+            ),
 
-              Row(
-                children: [
-                  buildUploadCard(
-                    title: "Top",
-                    image: topImage,
-                    colour: topColour,
-                    onTap: () => pickImage(true),
-                  ),
-                  buildUploadCard(
-                    title: "Bottom",
-                    image: bottomImage,
-                    colour: bottomColour,
-                    onTap: () => pickImage(false),
-                  ),
-                ],
-              ),
+            const SizedBox(height: 30),
 
-              const SizedBox(height: 30),
-
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: analyseOutfit,
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                  ),
-                  child: const Text(
-                    "Analyse Outfit",
-                    style: TextStyle(fontSize: 16),
+            SizedBox(
+              width: double.infinity,
+              height: 56,
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.analytics, color: Colors.white),
+                label: const Text(
+                  "Analyse Outfit",
+                  style: TextStyle(color: Colors.white),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
                   ),
                 ),
+                onPressed: analyseOutfit,
               ),
+            ),
 
-              buildResultCard(),
-
-            ],
-          ),
+            buildResultCard(),
+          ],
         ),
       ),
     );
